@@ -1,12 +1,21 @@
-import { IProduct } from "./product.interface";
-import ProductModel from "./product.model";
+import { IProduct } from './product.interface';
+import ProductModel from './product.model';
 
 // Create a new book (Product)
 export const createBookService = async (bookData: IProduct) => {
   try {
     // Validate input data
-    if (!bookData.title || !bookData.author || !bookData.price || !bookData.category || !bookData.quantity || bookData.inStock === undefined) {
-      throw new Error("Missing required fields: title, author, price, category, quantity, or inStock.");
+    if (
+      !bookData.title ||
+      !bookData.author ||
+      !bookData.price ||
+      !bookData.category ||
+      !bookData.quantity ||
+      bookData.inStock === undefined
+    ) {
+      throw new Error(
+        'Missing required fields: title, author, price, category, quantity, or inStock.',
+      );
     }
 
     const newBook = new ProductModel(bookData);
@@ -16,7 +25,7 @@ export const createBookService = async (bookData: IProduct) => {
     if (error instanceof Error) {
       throw new Error(`Failed to create book: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while creating the book.");
+      throw new Error('An unknown error occurred while creating the book.');
     }
   }
 };
@@ -28,9 +37,9 @@ export const getAllBooksService = async (searchTerm?: string) => {
     if (searchTerm) {
       query = {
         $or: [
-          { title: { $regex: searchTerm, $options: "i" } },
-          { author: { $regex: searchTerm, $options: "i" } },
-          { category: { $regex: searchTerm, $options: "i" } },
+          { title: { $regex: searchTerm, $options: 'i' } },
+          { author: { $regex: searchTerm, $options: 'i' } },
+          { category: { $regex: searchTerm, $options: 'i' } },
         ],
       };
     }
@@ -40,7 +49,7 @@ export const getAllBooksService = async (searchTerm?: string) => {
     if (error instanceof Error) {
       throw new Error(`Failed to retrieve books: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while retrieving books.");
+      throw new Error('An unknown error occurred while retrieving books.');
     }
   }
 };
@@ -50,44 +59,51 @@ export const getBookByIdService = async (productId: string) => {
   try {
     // Validate the productId format
     if (!productId || productId.length !== 24) {
-      throw new Error("Invalid product ID format");
+      throw new Error('Invalid product ID format');
     }
 
     const book = await ProductModel.findById(productId);
     if (!book) {
-      throw new Error("Book not found");
+      throw new Error('Book not found');
     }
     return book;
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error(`Failed to retrieve book: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while retrieving the book.");
+      throw new Error('An unknown error occurred while retrieving the book.');
     }
   }
 };
 
 // Update a book by ID
-export const updateBookService = async (productId: string, updatedData: Partial<IProduct>) => {
+export const updateBookService = async (
+  productId: string,
+  updatedData: Partial<IProduct>,
+) => {
   try {
     // Validate the productId format
     if (!productId || productId.length !== 24) {
-      throw new Error("Invalid product ID format");
+      throw new Error('Invalid product ID format');
     }
 
-    const updatedBook = await ProductModel.findByIdAndUpdate(productId, updatedData, {
-      new: true,
-      runValidators: true,
-    });
+    const updatedBook = await ProductModel.findByIdAndUpdate(
+      productId,
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
     if (!updatedBook) {
-      throw new Error("Book not found");
+      throw new Error('Book not found');
     }
     return updatedBook;
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error(`Failed to update book: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while updating the book.");
+      throw new Error('An unknown error occurred while updating the book.');
     }
   }
 };
@@ -97,19 +113,19 @@ export const deleteBookService = async (productId: string) => {
   try {
     // Validate the productId format
     if (!productId || productId.length !== 24) {
-      throw new Error("Invalid product ID format");
+      throw new Error('Invalid product ID format');
     }
 
     const deletedBook = await ProductModel.findByIdAndDelete(productId);
     if (!deletedBook) {
-      throw new Error("Book not found");
+      throw new Error('Book not found');
     }
     return deletedBook;
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error(`Failed to delete book: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while deleting the book.");
+      throw new Error('An unknown error occurred while deleting the book.');
     }
   }
 };

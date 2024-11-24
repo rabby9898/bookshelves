@@ -9,10 +9,8 @@ app.use(express.json());
 app.use(cors());
 
 // routes
-app.use("/api/products", BookRoutes)
-app.use("/api/orders", OrderRoutes)
-
-
+app.use('/api/products', BookRoutes);
+app.use('/api/orders', OrderRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');

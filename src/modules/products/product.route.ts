@@ -9,4 +9,4 @@ router.get('/:productId', productController.getBookById);
 router.put('/:productId', productController.updateBook);
 router.delete('/:productId', productController.deleteBook);
 
-export  const BookRoutes = router;
+export const BookRoutes = router;

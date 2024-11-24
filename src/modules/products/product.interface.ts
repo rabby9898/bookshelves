@@ -1,11 +1,10 @@
-
-
+/* eslint-disable no-unused-vars */
 export enum BookCategory {
-  Fiction = "Fiction",
-  Science = "Science",
-  SelfDevelopment = "SelfDevelopment",
-  Poetry = "Poetry",
-  Religious = "Religious",
+  Fiction = 'Fiction',
+  Science = 'Science',
+  SelfDevelopment = 'SelfDevelopment',
+  Poetry = 'Poetry',
+  Religious = 'Religious',
 }
 
 export interface IProduct {

@@ -1,9 +1,7 @@
-import { Document } from "mongoose";
-
-// Enum or specific types if needed for order states, etc. You can expand it later.
+import { Types, Document } from 'mongoose';
 export interface IOrder extends Document {
   email: string;
-  product: string; 
+  product: Types.ObjectId; // Correct TypeScript definition
   quantity: number;
   totalPrice: number;
 }

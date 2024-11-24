@@ -1,193 +1,161 @@
 import { Request, Response } from "express";
-
+import {
+  createBookService,
+  deleteBookService,
+  getAllBooksService,
+  getBookByIdService,
+  updateBookService,
+} from "./product.services";
 import mongoose from "mongoose";
-import { createBookService, deleteBookService, getAllBooksService, getBookByIdService, updateBookService } from "./product.services";
 
-// Controller to create a new book (Product)
-const createBook = async (req: Request, res: Response) => {
+const createBook = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Extract the product data from the request body
     const productData = req.body.product;
 
-    // Call the service function to create the book
+    if (!productData) {
+      res.status(400).json({
+        message: "Product data is missing.",
+        success: false,
+      });
+      return;
+    }
+
     const newBook = await createBookService(productData);
 
-    return res.status(201).json({
+    res.status(201).json({
       message: "Book created successfully",
       success: true,
-      data: newBook
+      data: newBook,
     });
   } catch (error) {
-    if (error instanceof Error) {
-      return res.status(500).json({
-        message: `Failed to create book: ${error.message}`,
-        success: false
-      });
-    } else {
-      return res.status(500).json({
-        message: "An unknown error occurred while creating the book.",
-        success: false
-      });
-    }
+    res.status(500).json({
+      message: `Failed to create book: ${(error as Error).message}`,
+      success: false,
+    });
   }
 };
 
-// Controller to get all books or search by category, title, or author
-const getAllBooks = async (req: Request, res: Response) => {
+const getAllBooks = async (req: Request, res: Response): Promise<void> => {
   try {
     const searchTerm = req.query.searchTerm as string | undefined;
     const books = await getAllBooksService(searchTerm);
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Books retrieved successfully",
       success: true,
       data: books,
     });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return res.status(500).json({
-        message: `Failed to retrieve books: ${error.message}`,
-        success: false,
-      });
-    } else {
-      return res.status(500).json({
-        message: "An unknown error occurred while retrieving the books.",
-        success: false,
-      });
-    }
+  } catch (error) {
+    res.status(500).json({
+      message: `Failed to retrieve books: ${(error as Error).message}`,
+      success: false,
+    });
   }
 };
 
-// Controller to get a specific book by ID
-const getBookById = async (req: Request, res: Response) => {
+const getBookById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { productId } = req.params;
 
-    // Validate that productId is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({
-        message: "Invalid Product ID format",
+      res.status(400).json({
+        message: "Invalid Product ID format.",
         success: false,
       });
+      return;
     }
 
-    // Call service to get book by ID
     const book = await getBookByIdService(productId);
 
-    // If the book doesn't exist, return a 404 error
     if (!book) {
-      return res.status(404).json({
-        message: "Book not found",
+      res.status(404).json({
+        message: "Book not found.",
         success: false,
       });
+      return;
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Book retrieved successfully",
       success: true,
       data: book,
     });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return res.status(500).json({
-        message: `Failed to retrieve book: ${error.message}`,
-        success: false,
-      });
-    } else {
-      return res.status(500).json({
-        message: "An unknown error occurred while retrieving the book.",
-        success: false,
-      });
-    }
+  } catch (error) {
+    res.status(500).json({
+      message: `Failed to retrieve book: ${(error as Error).message}`,
+      success: false,
+    });
   }
 };
 
-// Controller to update a book by ID
-const updateBook = async (req: Request, res: Response) => {
+const updateBook = async (req: Request, res: Response): Promise<void> => {
   try {
     const { productId } = req.params;
-    const updatedBookDetails = req.body;
+    const updatedData = req.body;
 
-    // Validate the productId format
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({
-        message: "Invalid Product ID format",
+      res.status(400).json({
+        message: "Invalid Product ID format.",
         success: false,
       });
+      return;
     }
 
-    // Call service to update the book
-    const updatedBook = await updateBookService(productId, updatedBookDetails);
+    const updatedBook = await updateBookService(productId, updatedData);
 
-    // If the book is not found or not updated, return a 404 error
     if (!updatedBook) {
-      return res.status(404).json({
-        message: "Book not found or failed to update",
+      res.status(404).json({
+        message: "Book not found.",
         success: false,
       });
+      return;
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Book updated successfully",
       success: true,
       data: updatedBook,
     });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return res.status(500).json({
-        message: `Failed to update book: ${error.message}`,
-        success: false,
-      });
-    } else {
-      return res.status(500).json({
-        message: "An unknown error occurred while updating the book.",
-        success: false,
-      });
-    }
+  } catch (error) {
+    res.status(500).json({
+      message: `Failed to update book: ${(error as Error).message}`,
+      success: false,
+    });
   }
 };
 
-// Controller to delete a book by ID
-const deleteBook = async (req: Request, res: Response) => {
+const deleteBook = async (req: Request, res: Response): Promise<void> => {
   try {
     const { productId } = req.params;
 
-    // Validate the productId format
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({
-        message: "Invalid Product ID format",
+      res.status(400).json({
+        message: "Invalid Product ID format.",
         success: false,
       });
+      return;
     }
 
-    // Call service to delete the book
     const deletedBook = await deleteBookService(productId);
 
-    // If the book is not found, return a 404 error
     if (!deletedBook) {
-      return res.status(404).json({
-        message: "Book not found",
+      res.status(404).json({
+        message: "Book not found.",
         success: false,
       });
+      return;
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Book deleted successfully",
       success: true,
-      data: {},
+      data: deletedBook,
     });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return res.status(500).json({
-        message: `Failed to delete book: ${error.message}`,
-        success: false,
-      });
-    } else {
-      return res.status(500).json({
-        message: "An unknown error occurred while deleting the book.",
-        success: false,
-      });
-    }
+  } catch (error) {
+    res.status(500).json({
+      message: `Failed to delete book: ${(error as Error).message}`,
+      success: false,
+    });
   }
 };
 

@@ -1,35 +1,21 @@
 import { Request, Response } from "express";
 import { createOrderService, calculateRevenueService } from "./order.services";
-import ProductModel from "../products/product.model";
 
-// Controller to create a new order
-const createOrder = async (req: Request, res: Response) => {
+/* Controller to create a new order */
+
+/* Controller to create a new order */
+const createOrder = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, product, quantity, totalPrice } = req.body;
 
     // Validate input
     if (!email || !product || !quantity || !totalPrice) {
-      return res.status(400).json({
-        message: "Missing required fields. Please provide email, product, quantity, and totalPrice.",
-        status: false,
+      res.status(400).json({
+        message:
+          "Missing required fields. Please provide email, product, quantity, and totalPrice.",
+        success: false,
       });
-    }
-
-    // Check if the product exists
-    const productInStock = await ProductModel.findById(product);
-    if (!productInStock) {
-      return res.status(404).json({
-        message: "Product not found.",
-        status: false,
-      });
-    }
-
-    // Check if the requested quantity is available in stock
-    if (productInStock.quantity < quantity) {
-      return res.status(400).json({
-        message: `Insufficient stock. Only ${productInStock.quantity} items are available.`,
-        status: false,
-      });
+      return;
     }
 
     // Prepare the order data
@@ -40,64 +26,44 @@ const createOrder = async (req: Request, res: Response) => {
       totalPrice,
     };
 
-    // Call the service function to create the order
+    // Create the order using the service
     const newOrder = await createOrderService(orderData);
 
-    // Reduce the stock quantity
-    productInStock.quantity -= quantity;
-    if (productInStock.quantity === 0) {
-      productInStock.inStock = false; // Set inStock to false if out of stock
-    }
-    await productInStock.save();
-
-    return res.status(201).json({
+    res.status(201).json({
       message: "Order created successfully",
-      status: true,
+      success: true,
       data: newOrder,
     });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return res.status(500).json({
-        message: `Failed to create order: ${error.message}`,
-        status: false,
-      });
-    } else {
-      return res.status(500).json({
-        message: "An unknown error occurred",
-        status: false,
-      });
-    }
+  } catch (error) {
+    res.status(500).json({
+      message: `Failed to create order: ${(error as Error).message}`,
+      success: false,
+    });
   }
 };
 
-// Controller to calculate total revenue from all orders
-const calculateRevenue = async (req: Request, res: Response) => {
+
+/* Controller to calculate total revenue from all orders */
+const calculateRevenue = async (req: Request, res: Response): Promise<void> => {
   try {
     const totalRevenue = await calculateRevenueService();
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Revenue calculated successfully",
-      status: true,
+      success: true,
       data: {
         totalRevenue,
       },
     });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return res.status(500).json({
-        message: `Failed to calculate revenue: ${error.message}`,
-        status: false,
-      });
-    } else {
-      return res.status(500).json({
-        message: "An unknown error occurred",
-        status: false,
-      });
-    }
+  } catch (error) {
+    res.status(500).json({
+      message: `Failed to calculate revenue: ${(error as Error).message}`,
+      success: false,
+    });
   }
 };
 
-// Export the controller functions
+/* Export the controller functions */
 export const orderController = {
   createOrder,
   calculateRevenue,
