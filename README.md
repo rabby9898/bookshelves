@@ -82,8 +82,9 @@ yarn install
 Create a `.env` file in the root directory and provide the following environment variables:
 
 ```env
-PORT=3000
-MONGO_URI=mongodb://localhost:27017/bookshelves
+NODE_ENV=development
+PORT=5000
+DATABASE_URL=mongodb+srv://mdfajlerabby00:ZAYWx3Vsp1aQNtXS@bookshelves.o1scq.mongodb.net/?retryWrites=true&w=majority&appName=bookshelves
 ```
 
 ### 4. Run the Application
