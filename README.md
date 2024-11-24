@@ -107,11 +107,11 @@ DATABASE_URL=mongodb+srv://mdfajlerabby00:ZAYWx3Vsp1aQNtXS@bookshelves.o1scq.mon
 
 | Endpoint              | Method | Description                         |
 | --------------------- | ------ | ----------------------------------- |
-| `/api/books`          | POST   | Add a new book                      |
-| `/api/books`          | GET    | Retrieve all books or search books  |
-| `/api/books/:id`      | GET    | Retrieve a specific book by ID      |
-| `/api/books/:id`      | PUT    | Update a specific book by ID        |
-| `/api/books/:id`      | DELETE | Delete a specific book by ID        |
+| `/api/products`       | POST   | Add a new book                      |
+| `/api/products`       | GET    | Retrieve all books or search books  |
+| `/api/products/:id`   | GET    | Retrieve a specific book by ID      |
+| `/api/products/:id`   | PUT    | Update a specific book by ID        |
+| `/api/products/:id`   | DELETE | Delete a specific book by ID        |
 | `/api/orders`         | POST   | Place a new order                   |
 | `/api/orders/revenue` | GET    | Calculate total revenue from orders |
 
