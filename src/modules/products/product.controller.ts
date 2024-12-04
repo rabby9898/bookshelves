@@ -10,7 +10,7 @@ import mongoose from "mongoose";
 
 const createBook = async (req: Request, res: Response): Promise<void> => {
   try {
-    const productData = req.body.product;
+    const productData = req.body;
 
     if (!productData) {
       res.status(400).json({
